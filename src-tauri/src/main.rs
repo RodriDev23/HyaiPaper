@@ -1,9 +1,27 @@
+use core::panic;
 use once_cell::sync::Lazy;
 use std::fs;
 use std::process::Command;
-
 mod template;
 use template::generate_template::WallpaperManager;
+
+// a command to get the user name
+fn get_user() -> String {
+    let command_user = Command::new("whoami")
+        .output()
+        .expect("error getting the username");
+
+    if command_user.status.success() {
+        let user_name = String::from_utf8_lossy(&command_user.stdout)
+            .trim()
+            .to_string();
+        user_name // Return the user_name directly
+    } else {
+        panic!("Error getting the user");
+    }
+}
+
+// we create a static variable where we get the path
 
 static WALLPAPERS_PATH: Lazy<Vec<String>> = Lazy::new(|| {
     let mut wallpaper_paths = Vec::new();
@@ -34,19 +52,15 @@ fn trim_words(input: &str, words: &[&str]) -> String {
     result
 }
 
+// we get the path of the images, we replace for the real path and
+// generate a template
 async fn get_img(img_address: String) {
-    println!("img selected : {}", img_address);
     let trimmed_address = trim_words(&img_address, &["2F"]);
     let trim_fix = &trimmed_address.replace("%", "/");
     let real_path = &trim_fix.replace("asset://localhost/", " ");
-    println!("Trimmed img address: {}", real_path);
-
     let wallpaper_manager = WallpaperManager;
     let result = match wallpaper_manager.generate_template(real_path).await {
-        Ok(_) => {
-            println!("Template generated successfully");
-            Ok(())
-        }
+        Ok(_) => Ok(()),
         Err(err) => {
             eprintln!("Error generating template: {}", err);
             Err(err)
@@ -54,33 +68,17 @@ async fn get_img(img_address: String) {
     };
 
     if let Err(err) = result {
-        eprintln!("Panic occurred: {:?}", err);
+        panic!("Panic occurred: {:?}", err);
     }
 }
 
-
+// we get the images from the user
 #[tauri::command]
 async fn get_img_address(img_address: String) {
     get_img(img_address).await;
-
 }
 
-fn get_user() -> String {
-    let mut user_name = String::new();
-    let command_user = Command::new("whoami")
-        .output()
-        .expect("error getting the username");
-    if command_user.status.success() {
-        user_name = String::from_utf8_lossy(&command_user.stdout)
-            .trim()
-            .to_string();
-        println!("user name: {}", user_name);
-    } else {
-        panic!("Error getting the user");
-    }
-    user_name
-}
-
+// we send the path of every image to the user
 #[tauri::command]
 fn send_wallpapers_user() -> Vec<String> {
     WALLPAPERS_PATH.clone()
@@ -95,4 +93,3 @@ fn main() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-

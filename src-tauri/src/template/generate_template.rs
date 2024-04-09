@@ -29,7 +29,6 @@ impl WallpaperManager {
             let user_name = String::from_utf8_lossy(&command_user.stdout)
                 .trim()
                 .to_string();
-            println!("user name: {}", user_name);
             user_name
         } else {
             panic!("Failed to get the username");
@@ -47,7 +46,6 @@ impl WallpaperManager {
         file_hyprland_wallpaper
             .write_all(template_text.as_bytes())
             .expect("Failed to write to file");
-        println!("Template generated successfully");
         Ok(())
     }
 
@@ -58,7 +56,6 @@ impl WallpaperManager {
             .expect("Failed to execute command");
 
         if delete_command.status.success() {
-            println!("Template deleted successfully");
             Ok(())
         } else {
             panic!("Error deleting template");
@@ -77,7 +74,7 @@ impl WallpaperManager {
         // we move the new file to the folder
         if !mv_command.status.success() {
             let stderr = String::from_utf8_lossy(&mv_command.stderr);
-            eprintln!("Error executing 'mv' command: {}", stderr);
+            panic!("Error executing 'mv' command: {}", stderr);
         }
 
         // we kill the app in order to update the code
@@ -89,7 +86,7 @@ impl WallpaperManager {
 
         if !kill_hyprpaper.status.success() {
             let stderr = String::from_utf8_lossy(&kill_hyprpaper.stderr);
-            eprintln!("Error executing 'killall' command: {}", stderr);
+            panic!("Error executing 'killall' command: {}", stderr);
         }
 
         // and with the ctl tools of hyprland we launch the app again
@@ -110,8 +107,6 @@ impl WallpaperManager {
         let hyper_ctl = hyprctl_status.success();
         // and if everything is okay we make the magic happends
         if mv_status && kill_status && hyper_ctl {
-            println!("Wallpaper set correctly");
-
             Ok(())
         } else {
             panic!("Error setting the wallpaper");
@@ -120,7 +115,6 @@ impl WallpaperManager {
 
     pub async fn generate_template(&self, path: &str) -> io::Result<()> {
         if std::path::Path::new("hyprpaper.conf").exists() {
-            println!("Template already exists, deleting it before generating a new one");
             self.delete_template().await?;
         }
         self.create_file(path).await?;
@@ -128,4 +122,3 @@ impl WallpaperManager {
         Ok(())
     }
 }
-

@@ -3,6 +3,17 @@
 version = 3
 
 [[package]]
+name = "HyaiPaper"
+version = "1.0.0"
+dependencies = [
+ "once_cell",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3216,17 +3227,6 @@ checksum = "29790946404f91d9c5d06f9874efddea1dc06c5efe94541a7d6863108e3a5e4b"
 dependencies = [
  "same-file",
  "winapi-util",
-]
-
-[[package]]
-name = "wallpaper-manager"
-version = "0.0.0"
-dependencies = [
- "once_cell",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
 ]
 
 [[package]]
