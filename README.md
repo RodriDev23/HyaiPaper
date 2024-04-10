@@ -4,7 +4,7 @@
 HyaiPaper is a wallpaper selector designed to provide a faster experience for users in Hyprland.
 Features
 
-![Alt Text](video.gif)
+![Alt Text](video.gif){ width=50% }
 
 
     Quickly browse and select wallpapers.
