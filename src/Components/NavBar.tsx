@@ -3,7 +3,7 @@ import { IoSunnySharp } from "react-icons/io5";
 function NavBar() {
     return (
         <header className="py-4 w-full">
-            <div className="flex items-center justify-between max-w-full px-4 w-full">
+            <div className="flex items-center justify-between max-w-full px-3 w-full">
                 {/* Left side */}
                 <div className="flex items-center gap-2">
                     <a href="#" className="font-semibold flex items-center gap-2">
