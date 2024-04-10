@@ -1,5 +1,6 @@
-#Project Title
+# Project Title
 HyaiPaper
+
 
 HyaiPaper is a wallpaper selector designed to provide a faster experience for users in Hyprland.
 Features
