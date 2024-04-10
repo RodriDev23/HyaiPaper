@@ -1,5 +1,5 @@
 [package]
-name = "HyaiPaper"
+name = "hyai_paper"
 version = "1.0.0"
 description = "an that let you change wallpapers fast"
 authors = ["RodriDev23"]

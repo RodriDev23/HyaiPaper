@@ -33,6 +33,7 @@ export const WallpaperList: React.FC = () => {
         setSelectedImageIndex(index);
     };
 
+
     return (
         <div className="w-full md:w-full h-full flex flex-col justify-center items-center gap-20 pl-10 pb-10">
             <h2 className="text-3xl text-start md:text-4xl text-white font-bold self-start ml-5">Wallpaper List</h2>

@@ -35,6 +35,8 @@ impl WallpaperManager {
         }
     }
 
+
+    // here we create the template and write that template with the path of the img
     async fn create_file(&self, location_wallpaper: &str) -> io::Result<()> {
         let monitor_name = self.detect_monitor().await;
         let template_text = format!(
@@ -117,6 +119,7 @@ impl WallpaperManager {
         if std::path::Path::new("hyprpaper.conf").exists() {
             self.delete_template().await?;
         }
+        // we create an instance of the function
         self.create_file(path).await?;
         WallpaperManager::set_wallpaper(&self.get_username().await).await?;
         Ok(())
