@@ -22,8 +22,10 @@ To install HyaiPaper, follow these steps:
         Xrandr
 
     You can install them using your package manager. For example, on Arch Linux:
-
-    sudo pacman -S hyprland hyprpaper hyprctl xorg-xrandr
+  
+```bash
+ sudo pacman -S hyprland hyprpaper hyprctl xorg-xrandr
+```
 
 
 Usage
