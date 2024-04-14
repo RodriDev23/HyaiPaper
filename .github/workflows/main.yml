@@ -17,15 +17,15 @@ jobs:
         with:
           node-version: latest
           check-latest: true
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: "latest"
       
-
       - name: Install Rust (Stable)
         run:
           curl https://sh.rustup.rs -sSf | sh -s -- -y
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+         bun-version: 'latest' 
 
       - name: Install app dependencies from lockfile and build web
         # NOTE: comment out && npm run build if frontend does not have build script
