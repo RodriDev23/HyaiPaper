@@ -8,28 +8,37 @@ on:
 jobs:
   release:
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-latest]
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+        # platform: [windows-latest]
         include:
-        - os: ubuntu-latest
-          rust_target: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            rust_target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            rust_target: x86_64-apple-darwin
+          - os: macos-latest
+            rust_target: aarch64-apple-darwin
+          - os: windows-latest
+            rust_target: x86_64-pc-windows-msvc
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.2
-      
+      - uses: Swatinem/rust-cache@v2
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: "latest"
-
-      - uses: Swatinem/rust-cache@v2
-
+          node-version: latest
+          check-latest: true
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           profile: minimal
-      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1.2.1
+        with:
+         bun-version: 'latest' 
       - name: Build Changelog
         id: build_changelog
         run: echo "changelog=- ADD CHANGELOG" >> $GITHUB_OUTPUT
@@ -52,4 +61,3 @@ jobs:
             See the assets to download this version and install.
           releaseDraft: true
           prerelease: false
-
