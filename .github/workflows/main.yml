@@ -17,22 +17,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.2
-      - uses: Swatinem/rust-cache@v2
+      
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1.2.1
+        uses: oven-sh/setup-bun@v1
         with:
           bun-version: "latest"
+
+      - uses: Swatinem/rust-cache@v2
+
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           profile: minimal
+      
       - name: Build Changelog
         id: build_changelog
         run: echo "changelog=- ADD CHANGELOG" >> $GITHUB_OUTPUT
 
       - name: Install app dependencies from lockfile and build web
         # NOTE: comment out && npm run build if frontend does not have build script
-        run: npm install && npm run build
+        run: bun install && bun run build
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
