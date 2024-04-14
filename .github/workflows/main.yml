@@ -36,7 +36,7 @@ jobs:
 
       - name: Install app dependencies from lockfile and build web
         # NOTE: comment out && npm run build if frontend does not have build script
-        run: bun install && bun run build
+        run: npm install && npm run build
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
@@ -52,3 +52,4 @@ jobs:
             See the assets to download this version and install.
           releaseDraft: true
           prerelease: false
+
