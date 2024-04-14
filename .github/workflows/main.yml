@@ -17,20 +17,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.2
-      - uses: Swatinem/rust-cache@v2
+      
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: latest
-          check-latest: true
+          node-version: "latest"
+
+      - uses: Swatinem/rust-cache@v2
+
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           profile: minimal
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1.2.1
-        with:
-         bun-version: 'latest' 
+      
       - name: Build Changelog
         id: build_changelog
         run: echo "changelog=- ADD CHANGELOG" >> $GITHUB_OUTPUT
@@ -53,3 +52,4 @@ jobs:
             See the assets to download this version and install.
           releaseDraft: true
           prerelease: false
+
