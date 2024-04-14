@@ -17,6 +17,11 @@ jobs:
         with:
           node-version: latest
           check-latest: true
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: "latest"
+      
 
       - name: Install Rust (Stable)
         run:
