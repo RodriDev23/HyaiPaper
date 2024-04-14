@@ -2,30 +2,33 @@ name: Build/Release
 on:
   push:
     tags:
-      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*"
   workflow_dispatch:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        include:
+        - os: ubuntu-latest
+          rust_target: x86_64-unknown-linux-gnu
+    runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.2
-
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: latest
-          check-latest: true
-      
-      - name: Install Rust (Stable)
-        run:
-          curl https://sh.rustup.rs -sSf | sh -s -- -y
-      
+      - uses: Swatinem/rust-cache@v2
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1.2.1
         with:
-         bun-version: 'latest' 
+          bun-version: "latest"
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          profile: minimal
+      - name: Build Changelog
+        id: build_changelog
+        run: echo "changelog=- ADD CHANGELOG" >> $GITHUB_OUTPUT
 
       - name: Install app dependencies from lockfile and build web
         # NOTE: comment out && npm run build if frontend does not have build script
@@ -39,7 +42,7 @@ jobs:
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "WindowPet v__VERSION__"
+          releaseName: "HyaiPaper v__VERSION__"
           releaseBody: |
             ${{steps.build_changelog.outputs.changelog}}
             See the assets to download this version and install.
