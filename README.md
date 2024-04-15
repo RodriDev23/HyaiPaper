@@ -4,7 +4,7 @@
 HyaiPaper is a wallpaper selector designed to provide a faster experience for users in Hyprland.
 Features
 
-![Alt Text](video.gif)
+![Alt Text](video2.gif)
 
 
     Quickly browse and select wallpapers.
@@ -22,8 +22,10 @@ To install HyaiPaper, follow these steps:
         Xrandr
 
     You can install them using your package manager. For example, on Arch Linux:
-
-    sudo pacman -S hyprland hyprpaper hyprctl xorg-xrandr
+  
+```bash
+ sudo pacman -S hyprland hyprpaper hyprctl xorg-xrandr
+```
 
 
 Usage
