@@ -1,3 +1,4 @@
+use std::fmt::format;
 use std::io::{self, Write};
 use std::process::{Command, Stdio};
 
@@ -35,19 +36,19 @@ impl WallpaperManager {
         }
     }
 
-
-    // here we create the template and write that template with the path of the img
     async fn create_file(&self, location_wallpaper: &str) -> io::Result<()> {
+        let user_name = self.get_username().await;
+        let downloads_dir = format!("/home/{}/Downloads/hyprland.conf", user_name);
+        // Create the template text
         let monitor_name = self.detect_monitor().await;
         let template_text = format!(
             "preload = {}\nwallpaper = {},{}\nsplash = false\n",
             location_wallpaper, monitor_name, location_wallpaper
         );
-        let mut file_hyprland_wallpaper =
-            std::fs::File::create("hyprpaper.conf").expect("Failed to create file");
-        file_hyprland_wallpaper
-            .write_all(template_text.as_bytes())
-            .expect("Failed to write to file");
+
+        // Create the file and write the template text
+        let mut file_hyprland_wallpaper = std::fs::File::create(downloads_dir)?;
+        file_hyprland_wallpaper.write_all(template_text.as_bytes())?;
         Ok(())
     }
 
