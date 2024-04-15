@@ -7,7 +7,7 @@
     },
     "package": {
         "productName": "HyaiPaper",
-        "version": "1.0.0"
+        "version": "1.0.1"
     },
     "tauri": {
         "allowlist": {
@@ -22,12 +22,14 @@
             "protocol": {
                 "asset": true,
                 "assetScope": [
+                    "$DOWNLOADS/**",
                     "$DOCUMENT/**",
-                    "$HOME/**"
+                    "$HOME/**",
+                    "$HOME/.config/**"
                 ]
             },
             "dialog": {
-                "message": true,
+                "message": false,
                 "save": true,
                 "confirm": true
             }
