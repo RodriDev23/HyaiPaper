@@ -1,6 +1,6 @@
-use std::fmt::format;
 use std::io::{self, Write};
 use std::process::{Command, Stdio};
+
 
 pub struct WallpaperManager;
 
@@ -37,8 +37,6 @@ impl WallpaperManager {
     }
 
     async fn create_file(&self, location_wallpaper: &str) -> io::Result<()> {
-        let user_name = self.get_username().await;
-        let downloads_dir = format!("/home/{}/Downloads/hyprland.conf", user_name);
         // Create the template text
         let monitor_name = self.detect_monitor().await;
         let template_text = format!(
@@ -47,10 +45,11 @@ impl WallpaperManager {
         );
 
         // Create the file and write the template text
-        let mut file_hyprland_wallpaper = std::fs::File::create(downloads_dir)?;
+        let mut file_hyprland_wallpaper = std::fs::File::create("hyprpaper.conf")?;
         file_hyprland_wallpaper.write_all(template_text.as_bytes())?;
         Ok(())
     }
+
 
     async fn delete_template(&self) -> Result<(), std::io::Error> {
         let delete_command = Command::new("rm")
@@ -119,8 +118,7 @@ impl WallpaperManager {
     pub async fn generate_template(&self, path: &str) -> io::Result<()> {
         if std::path::Path::new("hyprpaper.conf").exists() {
             self.delete_template().await?;
-        }
-        // we create an instance of the function
+        }         // we create an instance of the function
         self.create_file(path).await?;
         WallpaperManager::set_wallpaper(&self.get_username().await).await?;
         Ok(())
