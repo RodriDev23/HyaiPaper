@@ -16,7 +16,6 @@ export const WallpaperList: React.FC = () => {
                     setImageUrls(convertedUrls);
                     if (selectedImageIndex !== null) {
                         const imageName = convertedUrls[selectedImageIndex];
-                        console.log("Name of selected image:", imageName);
                         await invoke('get_img_address', { imgAddress: imageName });
                     }
                 } else {
@@ -43,7 +42,7 @@ export const WallpaperList: React.FC = () => {
                         <img
                             className="aspect-video w-[90%] object-cover rounded-lg hover:cursor-pointer hover:border hover:border-white transition-transform duration-300 ease-in-out transform hover:-translate-y-2 hover:scale-105"
                             src={imageUrl}
-                            alt="Wallpaper"
+                            alt="Wallpaper-image"
                             onClick={() => getImageSelectHandler(index)}
                         />
                     </div>
