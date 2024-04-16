@@ -5,6 +5,14 @@ use std::process::Command;
 mod template;
 use template::generate_template::WallpaperManager;
 
+
+// we get the images from the user
+#[tauri::command]
+async fn get_img_address(img_address: String) {
+    get_img(img_address).await;
+}
+
+
 // a command to get the user name
 fn get_user() -> String {
     let command_user = Command::new("whoami")
@@ -72,11 +80,7 @@ async fn get_img(img_address: String) {
     }
 }
 
-// we get the images from the user
-#[tauri::command]
-async fn get_img_address(img_address: String) {
-    get_img(img_address).await;
-}
+
 
 // we send the path of every image to the user
 #[tauri::command]
