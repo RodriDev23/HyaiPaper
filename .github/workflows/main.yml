@@ -49,4 +49,5 @@ jobs:
             ${{ steps.build_changelog.outputs.changelog }}
             See the assets to download this version and install.
           releaseDraft: true
+          includeRelease: true
           prerelease: false
