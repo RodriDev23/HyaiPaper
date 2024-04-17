@@ -36,17 +36,19 @@ jobs:
           npm install
           npm run build
 
-      - name: Build the app
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+      - name: tauri-build
+        uses: JonasKruckenberg/tauri-build@v1.0.3
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "HyaiPaper v__VERSION__"
-          releaseBody: |
+           includeRelease: true
+           tagName: ${{ github.ref_name }}
+           releaseName: "HyaiPaper v__VERSION__"
+           releaseBody: |
             ${{ steps.build_changelog.outputs.changelog }}
             See the assets to download this version and install.
-          releaseDraft: true
-          prerelease: false
+           releaseDraft: true
+           prerelease: false
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+         TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
