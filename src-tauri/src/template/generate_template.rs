@@ -1,20 +1,27 @@
 use std::io::{self, Write};
-use std::process::{Command, Stdio};
-
+use std::process::Command;
+use std::str;
 
 pub struct WallpaperManager;
 
 impl WallpaperManager {
-    async fn detect_monitor(&self) -> String {
-        let output = Command::new("sh")
-            .arg("-c")
-            .arg("xrandr | awk '/ connected/ { print $1; exit }'")
-            .stdout(Stdio::piped())
+    async fn detect_monitor(&self) -> Option<String> {
+        let output_monitor_name = Command::new("hyprctl")
+            .arg("monitors")
             .output()
             .expect("Failed to execute command");
 
-        if output.status.success() {
-            let monitor_name = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        if output_monitor_name.status.success() {
+            let stdout_str = str::from_utf8(&output_monitor_name.stdout).expect("Invalid UTF-8");
+            let mut monitor_name = None;
+            for line in stdout_str.lines() {
+                if let Some(start) = line.find('r') {
+                    if let Some(end) = line.find('(') {
+                        monitor_name = Some(line[start + 1..end].trim().to_string());
+                        break;
+                    }
+                }
+            }
             monitor_name
         } else {
             panic!("Command failed with non-zero exit status");
@@ -38,7 +45,7 @@ impl WallpaperManager {
 
     async fn create_file(&self, location_wallpaper: &str) -> io::Result<()> {
         // Create the template text
-        let monitor_name = self.detect_monitor().await;
+        let monitor_name = self.detect_monitor().await.unwrap_or_default();
         let template_text = format!(
             "preload = {}\nwallpaper = {},{}\nsplash = false\n",
             location_wallpaper, monitor_name, location_wallpaper
@@ -49,7 +56,6 @@ impl WallpaperManager {
         file_hyprland_wallpaper.write_all(template_text.as_bytes())?;
         Ok(())
     }
-
 
     async fn delete_template(&self) -> Result<(), std::io::Error> {
         let delete_command = Command::new("rm")
@@ -118,7 +124,7 @@ impl WallpaperManager {
     pub async fn generate_template(&self, path: &str) -> io::Result<()> {
         if std::path::Path::new("hyprpaper.conf").exists() {
             self.delete_template().await?;
-        }         // we create an instance of the function
+        } // we create an instance of the function
         self.create_file(path).await?;
         WallpaperManager::set_wallpaper(&self.get_username().await).await?;
         Ok(())
