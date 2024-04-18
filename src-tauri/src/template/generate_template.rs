@@ -1,6 +1,7 @@
-use std::io::{self, Write};
+use std::io::{self, BufRead, Seek, Write};
 use std::process::Command;
-use std::str;
+use std::{fs, str};
+use std::fs::OpenOptions;
 
 pub struct WallpaperManager;
 
@@ -44,16 +45,49 @@ impl WallpaperManager {
     }
 
     async fn create_file(&self, location_wallpaper: &str) -> io::Result<()> {
-        // Create the template text
+        let user_name = self.get_username().await;
         let monitor_name = self.detect_monitor().await.unwrap_or_default();
+
+        // Create the template text
         let template_text = format!(
-            "preload = {}\nwallpaper = {},{}\nsplash = false\n",
+            "preload = {}\nwallpaper = {},{}\nsplash = false",
             location_wallpaper, monitor_name, location_wallpaper
         );
 
-        // Create the file and write the template text
-        let mut file_hyprland_wallpaper = std::fs::File::create("hyprpaper.conf")?;
-        file_hyprland_wallpaper.write_all(template_text.as_bytes())?;
+        // Create a copy of the user file
+        let user_config_path = format!("/home/{}/.config/hypr/hyprpaper.conf", user_name);
+        let mut file_hyprland_wallpaper = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .open("hyprpaper.conf")?;
+
+        // Get the user config
+        let user_config = fs::read_to_string(&user_config_path)?;
+
+        // Write the user config to the new file
+        file_hyprland_wallpaper.write_all(user_config.as_bytes())?;
+
+        // Reset file cursor to the beginning
+        file_hyprland_wallpaper.seek(std::io::SeekFrom::Start(0))?;
+
+        // Read the file line by line and write it back with replacements
+        let mut contents = String::new();
+        for line in io::BufReader::new(&file_hyprland_wallpaper).lines() {
+            let line = line?;
+            if line.contains("preload") {
+                contents.push_str(&template_text);
+            } else {
+                contents.push_str(&line);
+            }
+            contents.push('\n');
+        }
+
+        // Truncate the file and write the modified contents
+        file_hyprland_wallpaper.set_len(0)?;
+        file_hyprland_wallpaper.seek(std::io::SeekFrom::Start(0))?;
+        file_hyprland_wallpaper.write_all(contents.as_bytes())?;
+
         Ok(())
     }
 
