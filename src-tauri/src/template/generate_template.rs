@@ -1,7 +1,7 @@
+use std::fs::OpenOptions;
 use std::io::{self, BufRead, Seek, Write};
 use std::process::Command;
 use std::{fs, str};
-use std::fs::OpenOptions;
 
 pub struct WallpaperManager;
 
@@ -56,11 +56,15 @@ impl WallpaperManager {
 
         // Create a copy of the user file
         let user_config_path = format!("/home/{}/.config/hypr/hyprpaper.conf", user_name);
+
         let mut file_hyprland_wallpaper = OpenOptions::new()
             .read(true)
             .write(true)
             .create(true)
-            .open("hyprpaper.conf")?;
+            .open(format!(
+                "/home/{}/Documents/hyprpaper.conf",
+                self.get_username().await
+            ))?;
 
         // Get the user config
         let user_config = fs::read_to_string(&user_config_path)?;
@@ -104,10 +108,13 @@ impl WallpaperManager {
         }
     }
 
-    async fn set_wallpaper(user: &str) -> Result<(), std::io::Error> {
+    async fn set_wallpaper(&mut self, user: &str) -> Result<(), std::io::Error> {
         let arg_path = format!("/home/{}/.config/hypr/hyprpaper.conf", user);
         let mv_command = Command::new("mv")
-            .arg("hyprpaper.conf")
+            .arg(format!(
+                "/home/{}/Documents/hyprpaper.conf",
+                self.get_username().await
+            ))
             .arg(&arg_path)
             .stderr(std::process::Stdio::piped())
             .output()
@@ -155,12 +162,12 @@ impl WallpaperManager {
         }
     }
 
-    pub async fn generate_template(&self, path: &str) -> io::Result<()> {
+    pub async fn generate_template(&mut self, path: &str) -> io::Result<()> {
         if std::path::Path::new("hyprpaper.conf").exists() {
             self.delete_template().await?;
         } // we create an instance of the function
         self.create_file(path).await?;
-        WallpaperManager::set_wallpaper(&self.get_username().await).await?;
+        self.set_wallpaper(&self.get_username().await).await?;
         Ok(())
     }
 }

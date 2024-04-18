@@ -66,7 +66,7 @@ async fn get_img(img_address: String) {
     let trimmed_address = trim_words(&img_address, &["2F"]);
     let trim_fix = &trimmed_address.replace("%", "/");
     let real_path = &trim_fix.replace("asset://localhost/", " ");
-    let wallpaper_manager = WallpaperManager;
+    let mut  wallpaper_manager = WallpaperManager;
     let result = match wallpaper_manager.generate_template(real_path).await {
         Ok(_) => Ok(()),
         Err(err) => {
