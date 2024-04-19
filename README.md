@@ -11,6 +11,15 @@ Features
     High-performance wallpaper rendering.
     Easy-to-use interface.
 
+
+## Before Installation
+
+Before installing HyaiPaper, it's recommended to make a backup copy of your existing `hyprpaper.conf` configuration file in case of any errors during installation or using it. You can do this by copying the file to a safe location.
+
+```bash
+cp ~/.config/hypr/hyprpaper.conf ~/Documents/hyprpaper_backup.conf
+```
+
 Installation
 
 To install HyaiPaper, follow these steps:
@@ -40,7 +49,7 @@ chmod a+x Hyai-paper.appImage
 Finally, move the app to the bin folder to easily launch it with your favorite launcher like rofi:
 
 ```bash
-sudo cp Hyai-paper /bin
+sudo mv Hyai-paper /bin
 ```
 
 After installing and starting HyaiPaper, follow these steps:
