@@ -20,7 +20,7 @@ To install HyaiPaper, follow these steps:
         Hyprpaper
         Hyprctl
 
-    You can install them using your package manager. For example, on Arch Linux:
+You can install it doing:
   
 ```bash
  sudo pacman -S hyprland hyprpaper hyprctl
@@ -28,6 +28,20 @@ To install HyaiPaper, follow these steps:
 
 
 Usage
+
+You can download the latest release of HyaiPaper from [here](https://github.com/RodriDev23/HyaiPaper/releases).
+
+After downloading, navigate to the downloaded directory and make the app executable:
+
+```bash 
+chmod a+x Hyai-paper.appImage
+```
+
+Finally, move the app to the bin folder to easily launch it with your favorite launcher like rofi:
+
+```bash
+sudo cp Hyai-paper /bin
+```
 
 After installing and starting HyaiPaper, follow these steps:
 
